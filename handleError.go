@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func handleError(err error) {
+func printError(err error) {
 	if err != nil {
 		fmt.Println(err)
 	}
