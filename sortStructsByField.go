@@ -5,6 +5,7 @@ import (
 	"sort"
 )
 
+// ByName represents sorting by name with the Interface interface
 type ByName []person
 
 func (byName ByName) Len() int { return len(byName) }
@@ -13,6 +14,7 @@ func (byName ByName) Swap(i, j int) {
 }
 func (byName ByName) Less(i, j int) bool { return byName[i].First < byName[j].First }
 
+// ByAge represents sorting by name with the Interface interface
 type ByAge []person
 
 func (byAge ByAge) Len() int { return len(byAge) }
