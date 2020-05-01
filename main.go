@@ -1,6 +1,11 @@
 package main
 
-func main() {
-	sortStructsByField()
+import (
+	"sync"
+)
 
+var wg sync.WaitGroup
+
+func main() {
+	goRoutines()
 }
