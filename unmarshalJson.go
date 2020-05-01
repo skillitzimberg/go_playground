@@ -7,6 +7,6 @@ import (
 // How to make this generic, meaning how can I make this work with any targets of any type?
 func unmarshalJSON(s string, target *[]interface{}) interface{} {
 	err := json.Unmarshal([]byte(s), target)
-	fakeHandleError(err)
+	printError(err)
 	return target
 }

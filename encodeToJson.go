@@ -11,11 +11,11 @@ func encodeJSON() {
 	// Unmarshal people from a string
 	var people []person
 	err := json.Unmarshal([]byte(s), &people)
-	fakeHandleError(err)
+	printError(err)
 
 	// Write the JSON encoding of a []person to the stream.
 	encoder := json.NewEncoder(os.Stdout)
 
 	err = encoder.Encode(people)
-	fakeHandleError(err)
+	printError(err)
 }

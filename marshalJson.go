@@ -8,7 +8,7 @@ import (
 
 func marshalJSON(input interface{}) {
 	bs, err := json.Marshal(input)
-	fakeHandleError(err)
+	printError(err)
 
 	fmt.Println("Marshalled input written as a []byte:")
 	fmt.Println(bs)
