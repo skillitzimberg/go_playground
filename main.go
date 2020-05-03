@@ -2,33 +2,29 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"sync"
 )
 
 var Wait sync.WaitGroup
-var Counter int = 0
+var mux sync.Mutex
+var counter int = 0
 
 func main() {
+	fmt.Println("Goroutines begin:", runtime.NumGoroutine())
 
-	for routine := 1; routine <= 2; routine++ {
+	const routineMax int = 100
 
-		Wait.Add(1)
-		go Routine(routine)
+	Wait.Add(routineMax)
+
+	for i := 0; i < routineMax; i++ {
+
+		go routine(i)
+
+		fmt.Printf("Goroutines running on run #%d: %d\n", i+1, runtime.NumGoroutine())
 	}
 
 	Wait.Wait()
-	fmt.Printf("Final Counter: %d\n", Counter)
-}
-
-func Routine(id int) {
-	fmt.Println("routine ID:", id)
-	for count := 0; count < 2; count++ {
-
-		value := Counter
-		value++
-		Counter = value
-		fmt.Printf("routine ID: %d; routine counter: %d", id, Counter)
-	}
-
-	Wait.Done()
+	fmt.Println("Goroutines end:", runtime.NumGoroutine())
+	fmt.Println("Final Counter:", counter)
 }
