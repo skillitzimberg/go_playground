@@ -8,7 +8,7 @@ import (
 
 var Wait sync.WaitGroup
 var mux sync.Mutex
-var counter int = 0
+var counter int64
 
 func main() {
 	fmt.Println("Goroutines begin:", runtime.NumGoroutine())
