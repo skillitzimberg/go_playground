@@ -5,13 +5,16 @@
       <title>Menu</title>
   </head>
   <body>
-    {{range .Meals}}
+    {{range $restaurant := .}}
       <div>
-        <p>{{.Meal}}</p>
+        <h2>{{$restaurant.Name}}</h2>
+        {{range $restaurant.Menu}}
+          <p>{{.Meal}}</p>
           {{range .Dishes}}
             <h2>{{.Dish}}</h2>
             <p>{{.Price}}</p>
           {{end}}
+        {{end}}
       </div>
     {{end}}
   </body>

@@ -19,7 +19,7 @@ func main() {
 	}
 	defer nf.Close()
 
-	err = tpl.ExecuteTemplate(nf, tpl.Name(), menu)
+	err = tpl.ExecuteTemplate(nf, tpl.Name(), restaurants)
 	if err != nil {
 		log.Fatalln("Failed to execute the template.", err)
 	}

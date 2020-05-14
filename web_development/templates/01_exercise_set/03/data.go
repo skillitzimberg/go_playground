@@ -5,9 +5,12 @@
 
 package main
 
-type offerings struct {
-	Meals []meal
+type restaurant struct {
+	Name string
+	Menu menu
 }
+
+type menu []meal
 
 type meal struct {
 	Meal   string
@@ -19,12 +22,30 @@ type dish struct {
 	Price float64
 }
 
-var menu = offerings{
-	[]meal{
-		breakfast,
-		lunch,
-		dinner,
-	},
+var restaurants = []restaurant{
+	steakhouse, pancakehouse,
+}
+
+var steakhouse = restaurant{
+	"The Meats",
+	steakhousemenu,
+}
+
+var pancakehouse = restaurant{
+	"The Pancake House",
+	pancakehousemenu,
+}
+
+var steakhousemenu = []meal{
+	breakfast,
+	lunch,
+	dinner,
+}
+
+var pancakehousemenu = []meal{
+	breakfast,
+	lunch,
+	dinner,
 }
 
 var breakfast = meal{

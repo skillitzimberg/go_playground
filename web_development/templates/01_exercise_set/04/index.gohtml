@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      {{template "title" "CS Course Catalog"}}
+  </head>
+  <body>
+    {{range .}}
+      {{template "datum" .}}
+
+    {{end}}
+  </body>
+</html>
