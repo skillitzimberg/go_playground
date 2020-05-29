@@ -1,0 +1,25 @@
+{{template "header"}}
+  <form method="POST">
+    <label for="firstName">First Name</label>
+    <input type="text" id="firstName" name="fName">
+    <br />
+
+    <label for="lastName">Last Name</label>
+    <input type="text" id="lastName" name="lName">
+    <br />
+
+    <label for="licensed">Licensed to Kill</label>
+    <input type="checkbox" id="licensed" name="isLicensed">
+    <br />
+
+    <input type="submit">
+  </form>
+
+  <br />
+
+  <h1>First name: {{.FirstName}}</h1>
+  <h1>Last name: {{.LastName}}</h1>
+  <h1>Licensed to kill: {{.IsLicensed}}</h1>
+  
+{{template "footer"}}
+
