@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Lobby</title>
+  </head>
+  <body>
+    <form method="POST">
+      <input name="UserName" />
+      <input name="First" />
+      <input name="Last" />
+      <input type="submit" />
+    </form>
+
+    {{if .First}}
+      <p>UserName: {{.UserName}}</p>
+      <p>First Name: {{.First}}</p>
+      <p>Last Name: {{.Last}}</p>
+    {{end}}
+
+    <a href="/bar">Go to the bar</a>
+  </body>
+</html>

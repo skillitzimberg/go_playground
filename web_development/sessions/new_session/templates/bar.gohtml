@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Bar</title>
+  </head>
+  <body>
+    <p>
+      Hello. Welcome to the bar.
+    </p>
+
+    {{if .First}}
+      <p>UserName: {{.UserName}}</p>
+      <p>First Name: {{.First}}</p>
+      <p>Last Name: {{.Last}}</p>
+    {{end}}
+
+    <a href="/">To the lobby</a>
+  </body>
+</html>
