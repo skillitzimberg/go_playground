@@ -1,7 +1,9 @@
-// Create User (struct), Users([]User), sessions (map[uuid]UserName).
+// Create user (struct), users([]User), sessions (map[uuid]UserName).
+// Add logic to create a session.
+// Add logic to associate a session ID with a user.
+// Add logic to retreive a user with the session ID.
 // Create a template form to get user info from the user (UserName, First, Last, etc.) and a link to another view.
 // Display the user's info in both views.
-// Create a session.
 // Use these tools to retrieve and display user info.
 package main
 
