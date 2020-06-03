@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Bar</title>
+  </head>
+  <body>
+    {{if .First}}
+      <p>Welcome, {{.First}} {{.Last}}. What can I get you?</p>
+      <a href="/logout">Log Out</a>
+    {{end}}
+
+    <a href="/">Go to the lobby</a>
+  </body>
+</html>
