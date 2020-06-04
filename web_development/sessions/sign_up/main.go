@@ -3,16 +3,18 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 
 	uuid "github.com/satori/go.uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var tpl *template.Template
 
 type user struct {
 	UserName string
-	Password string
+	Password []byte
 	First    string
 	Last     string
 }
@@ -62,9 +64,12 @@ func signup(w http.ResponseWriter, req *http.Request) {
 		pwrd := req.FormValue("Password")
 		f := req.FormValue("First")
 		l := req.FormValue("Last")
-
+		p, err := bcrypt.GenerateFromPassword([]byte(pwrd), bcrypt.MinCost)
+		if err != nil {
+			log.Fatal(err)
+		}
 		u = user{
-			un, pwrd, f, l,
+			un, p, f, l,
 		}
 
 		sID, _ := uuid.NewV4()
