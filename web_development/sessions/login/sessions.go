@@ -2,8 +2,6 @@ package main
 
 import (
 	"net/http"
-
-	uuid "github.com/satori/go.uuid"
 )
 
 func getUser(req *http.Request) user {
@@ -11,11 +9,7 @@ func getUser(req *http.Request) user {
 
 	c, err := req.Cookie("session")
 	if err != nil {
-		sID, _ := uuid.NewV4()
-		c = &http.Cookie{
-			Name:  "session",
-			Value: sID.String(),
-		}
+		return u
 	}
 
 	if un, ok := dbSessions[c.Value]; ok {
