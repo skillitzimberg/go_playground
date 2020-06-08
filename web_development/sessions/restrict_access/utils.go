@@ -19,11 +19,15 @@ func getUser(req *http.Request) user {
 	return u
 }
 
-func alreadyLoggedIn(req *http.Request) bool {
-	c := getCookie(req)
-	un := dbSessions[c.Value]
-	_, ok := dbUsers[un]
-	return ok
+func getCookie(req *http.Request) *http.Cookie {
+	c, err := req.Cookie(session)
+	if err != nil {
+		return &http.Cookie{
+			Name:  session,
+			Value: "",
+		}
+	}
+	return c
 }
 
 func newUUID(w http.ResponseWriter) uuid.UUID {
@@ -34,13 +38,9 @@ func newUUID(w http.ResponseWriter) uuid.UUID {
 	return sID
 }
 
-func getCookie(req *http.Request) *http.Cookie {
-	c, err := req.Cookie(session)
-	if err != nil {
-		return &http.Cookie{
-			Name:  session,
-			Value: "",
-		}
-	}
-	return c
+func alreadyLoggedIn(req *http.Request) bool {
+	c := getCookie(req)
+	un := dbSessions[c.Value]
+	_, ok := dbUsers[un]
+	return ok
 }
