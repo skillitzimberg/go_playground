@@ -23,7 +23,7 @@ func main() {
 	http.HandleFunc("/contact", contact)
 	http.HandleFunc("/projects", projects)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe("localhost:8080", nil)
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
