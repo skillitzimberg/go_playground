@@ -1,0 +1,64 @@
+ul {
+  max-height: 0;
+  overflow: hidden;
+  list-style: none;
+}
+
+label {
+  padding: 0.3em 0 0.3em 0;
+  display: block;
+  width: 1.2em;
+}
+
+#toggler:checked ~ ul {
+  max-height: 15em;
+}
+
+#hamburger,
+#hamburger::before,
+#hamburger::after {
+  display: block;
+  width: 1.2em;
+  height: 3px;
+  background: #333;
+  transition: all 0.4s ease;
+}
+
+#hamburger {
+  position: relative;
+}
+
+#hamburger::before,
+#hamburger::after {
+  position: absolute;
+  content: '';
+}
+
+#hamburger::before {
+  top: -5px;
+}
+
+#hamburger::after {
+  top: 5px;
+}
+
+#toggler {
+  display: none;
+}
+
+#toggler:checked ~ label #hamburger {
+  background: transparent;
+}
+
+#toggler:checked ~ label #hamburger::before,
+#toggler:checked ~ label #hamburger::after {
+  top: 0;
+}
+
+#toggler:checked ~ label #hamburger::before {
+  transform: rotate(135deg);
+}
+
+#toggler:checked ~ label #hamburger::after {
+  transform: rotate(45deg);
+}
