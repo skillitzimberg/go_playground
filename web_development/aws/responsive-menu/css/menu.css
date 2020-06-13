@@ -2,6 +2,7 @@ ul {
   max-height: 0;
   overflow: hidden;
   list-style: none;
+  transition: max-height 0.4s ease;
 }
 
 label {
