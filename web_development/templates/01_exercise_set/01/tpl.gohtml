@@ -1,33 +1,36 @@
 <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <title>CS Course Catalog</title>
-  </head>
-  <body>
+<html lang="en">
 
-    {{range .}}
+<head>
+  <meta charset="UTF-8">
+  <title>CS Course Catalog</title>
+</head>
 
-    <h1>{{.AcaYear}}</h1>
-    <div>
-      <h2>{{.Fall.Term}}</h2>
-      {{range .Fall.Courses}}
-        <h3>{{.Name}}</h3>
-        <p>{{.Number}}</p>
-        <p>{{.Units}}</p>
-      {{end}}
-    </div>
+<body>
 
-    <div>
-      <h2>{{.Spring.Term}}</h2>
-      {{range .Spring.Courses}}
-        <h3>{{.Name}}</h3>
-        <p>{{.Number}}</p>
-        <p>{{.Units}}</p>
-      {{end}}
-    </div>
+  {{range .}}
 
-
+  <h1>{{.AcaYear}}</h1>
+  <div>
+    <h2>{{.Fall.Term}}</h2>
+    {{range .Fall.Courses}}
+    <h3>{{.Name}}</h3>
+    <p>{{.Number}}</p>
+    <p>{{.Units}}</p>
     {{end}}
-  </body>
+  </div>
+
+  <div>
+    <h2>{{.Spring.Term}}</h2>
+    {{range .Spring.Courses}}
+    <h3>{{.Name}}</h3>
+    <p>{{.Number}}</p>
+    <p>{{.Units}}</p>
+    {{end}}
+  </div>
+
+
+  {{end}}
+</body>
+
 </html>

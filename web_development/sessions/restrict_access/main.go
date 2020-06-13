@@ -39,7 +39,7 @@ func main() {
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
-	tpl.ExecuteTemplate(w, "index.gohtml", nil)
+	tpl.ExecuteTemplate(w, "index.html", nil)
 }
 
 func bar(w http.ResponseWriter, req *http.Request) {
@@ -48,7 +48,7 @@ func bar(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	u := getUser(req)
-	tpl.ExecuteTemplate(w, "bar.gohtml", u)
+	tpl.ExecuteTemplate(w, "bar.html", u)
 }
 
 func armory(w http.ResponseWriter, req *http.Request) {
@@ -61,7 +61,7 @@ func armory(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/", http.StatusSeeOther)
 		return
 	}
-	tpl.ExecuteTemplate(w, "armory.gohtml", u)
+	tpl.ExecuteTemplate(w, "armory.html", u)
 }
 
 func register(w http.ResponseWriter, req *http.Request) {
@@ -100,7 +100,7 @@ func register(w http.ResponseWriter, req *http.Request) {
 
 		http.Redirect(w, req, "/", http.StatusSeeOther)
 	}
-	tpl.ExecuteTemplate(w, "register.gohtml", nil)
+	tpl.ExecuteTemplate(w, "register.html", nil)
 }
 
 func login(w http.ResponseWriter, req *http.Request) {
@@ -134,7 +134,7 @@ func login(w http.ResponseWriter, req *http.Request) {
 
 		http.Redirect(w, req, "/", http.StatusSeeOther)
 	}
-	tpl.ExecuteTemplate(w, "login.gohtml", nil)
+	tpl.ExecuteTemplate(w, "login.html", nil)
 
 }
 

@@ -39,7 +39,7 @@ func main() {
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/logout", logout)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":80", nil)
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
