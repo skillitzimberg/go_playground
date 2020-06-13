@@ -1,14 +1,24 @@
+nav {
+  float: right;
+}
+
 ul {
   max-height: 0;
   overflow: hidden;
   list-style: none;
-  transition: max-height 0.4s ease;
+  clear: both;
+  transition: all 0.4s ease;
+}
+
+li {
+  padding: 1em;
 }
 
 label {
-  padding: 0.3em 0 0.3em 0;
   display: block;
-  width: 1.2em;
+  float: right;
+  margin: 1.5em;
+  padding: 0.5em 0.1em;
 }
 
 #toggler:checked ~ ul {
@@ -19,20 +29,22 @@ label {
 #hamburger::before,
 #hamburger::after {
   display: block;
-  width: 1.2em;
-  height: 3px;
+  width: 1.3em;
+  height: 0.21em;
   background: #333;
   transition: all 0.4s ease;
 }
 
 #hamburger {
   position: relative;
+  transition: background-color 0.4s ease;
 }
 
 #hamburger::before,
 #hamburger::after {
   position: absolute;
   content: '';
+  transition: transform 0.4s ease;
 }
 
 #hamburger::before {
@@ -48,7 +60,7 @@ label {
 }
 
 #toggler:checked ~ label #hamburger {
-  background: transparent;
+  background-color: transparent;
 }
 
 #toggler:checked ~ label #hamburger::before,
@@ -61,5 +73,22 @@ label {
 }
 
 #toggler:checked ~ label #hamburger::after {
-  transform: rotate(45deg);
+  transform: rotate(225deg);
+}
+
+@media (min-width: 42em) {
+  label {
+    display: none;
+  }
+
+  ul {
+    max-height: none;
+    margin: 1.2em 1.5em 0 0;
+  }
+
+  li {
+    float: left;
+    padding: 0 1.5em;
+    border-right: 1px solid #333;
+  }
 }
