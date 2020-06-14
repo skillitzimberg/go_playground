@@ -76,6 +76,57 @@ label {
   transform: rotate(225deg);
 }
 
+@media (max-width: 20em) {
+  nav {
+    float: left;
+    width: 100%;
+  }
+
+  label {
+    display: block;
+    float: left;
+    margin: 0;
+    padding: 0.5em 0.1em;
+    width: 16em;
+    /* border: 1px solid black; */
+  }
+
+  #hamburger,
+  #hamburger::before,
+  #hamburger::after {
+    display: block;
+    /* float: right; */
+    width: 12em;
+    height: 0.21em;
+    background: #333;
+    transition: all 0.4s ease;
+  }
+
+  #hamburger::before {
+    width: 19.5em;
+  }
+
+  #hamburger::after {
+    width: 7em;
+  }
+
+  #toggler:checked ~ label #hamburger::before {
+    transform: rotate(0deg);
+    width: 7em;
+    top: -5px;
+  }
+
+  #toggler:checked ~ label #hamburger {
+    background-color: #333;
+  }
+
+  #toggler:checked ~ label #hamburger::after {
+    transform: rotate(0deg);
+    width: 19.5em;
+    top: 5px;
+  }
+}
+
 @media (min-width: 42em) {
   label {
     display: none;
