@@ -89,8 +89,7 @@ func login(w http.ResponseWriter, req *http.Request) {
 		un := req.FormValue("username")
 		pwrd := req.FormValue("password")
 
-		err = checkForUser(w, un, pwrd)
-		if err != nil {
+		if !userIsRegistered(w, un, pwrd) {
 			tpl.ExecuteTemplate(w, "login.html", "User does not exist.")
 			return
 		}

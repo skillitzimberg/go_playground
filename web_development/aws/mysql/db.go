@@ -29,10 +29,10 @@ func createUser(username string, password string) {
 	check("stmt.Exec", err)
 }
 
-func checkForUser(w http.ResponseWriter, username string, password string) error {
+func userIsRegistered(w http.ResponseWriter, username string, password string) bool {
 	s := fmt.Sprintf(`SELECT id FROM users WHERE password="%s" LIMIT 1`, string(password))
 	r := pool.QueryRow(s)
 	var user string
 	err := r.Scan(&user)
-	return err
+	return err != nil
 }
