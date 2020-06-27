@@ -7,7 +7,6 @@ import (
 	"text/template"
 
 	_ "github.com/go-sql-driver/mysql"
-	"golang.org/x/crypto/bcrypt"
 )
 
 var connectionString = "admin:sbmzggX0@tcp(database-1.cbcbeyzcudgn.us-west-2.rds.amazonaws.com:3306)/gowebdev?charset=utf8"
@@ -43,6 +42,7 @@ func main() {
 	check("pool.Ping", err)
 
 	http.HandleFunc("/", index)
+	http.HandleFunc("/login", login)
 	http.HandleFunc("/signup", signup)
 	http.HandleFunc("/users", showUsers)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
@@ -75,14 +75,28 @@ func signup(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		p, err := bcrypt.GenerateFromPassword([]byte(pwrd), bcrypt.MinCost)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-
-		createUser(un, p)
+		createUser(un, pwrd)
 
 		http.Redirect(w, req, "/users", http.StatusSeeOther)
 	}
 	tpl.ExecuteTemplate(w, "signup.html", nil)
+}
+
+func login(w http.ResponseWriter, req *http.Request) {
+	getUsers()
+
+	if req.Method == "POST" {
+		un := req.FormValue("username")
+		pwrd := req.FormValue("password")
+
+		err = checkForUser(w, un, pwrd)
+		if err != nil {
+			tpl.ExecuteTemplate(w, "login.html", "User does not exist.")
+			return
+		}
+		http.Redirect(w, req, "index.html", http.StatusSeeOther)
+		return
+	}
+
+	tpl.ExecuteTemplate(w, "login.html", nil)
 }

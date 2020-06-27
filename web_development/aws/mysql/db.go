@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
 func getUsers() {
 	rows, err := pool.Query("SELECT username, id FROM users")
@@ -16,7 +19,7 @@ func getUsers() {
 	}
 }
 
-func createUser(username string, password []byte) {
+func createUser(username string, password string) {
 	s := fmt.Sprintf(`INSERT INTO users (username, password) VALUES ("%s", "%s");`, username, password)
 	stmt, err := pool.Prepare(s)
 	check("pool.Prepare", err)
@@ -24,4 +27,12 @@ func createUser(username string, password []byte) {
 
 	_, err = stmt.Exec()
 	check("stmt.Exec", err)
+}
+
+func checkForUser(w http.ResponseWriter, username string, password string) error {
+	s := fmt.Sprintf(`SELECT id FROM users WHERE password="%s" LIMIT 1`, string(password))
+	r := pool.QueryRow(s)
+	var user string
+	err := r.Scan(&user)
+	return err
 }
