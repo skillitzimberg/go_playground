@@ -16,7 +16,7 @@ var err error
 
 type user struct {
 	Username string
-	Password []byte
+	ID       string
 }
 
 var users = map[string]user{} // [username]user

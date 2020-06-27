@@ -3,16 +3,16 @@ package main
 import "fmt"
 
 func getUsers() {
-	rows, err := pool.Query("SELECT username, password FROM users")
+	rows, err := pool.Query("SELECT username, id FROM users")
 	check("pool.Query", err)
 	defer rows.Close()
 
-	var username, password string
+	var username, id string
 
 	for rows.Next() {
-		err = rows.Scan(&username, &password)
+		err = rows.Scan(&username, &id)
 		check("rows.Scan", err)
-		users[username] = user{username, []byte("")}
+		users[username] = user{username, id}
 	}
 }
 
