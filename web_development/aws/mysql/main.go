@@ -16,16 +16,21 @@ var err error
 type user struct {
 	Username string
 	ID       string
+	Password []byte
 }
 
 var users = map[string]user{} // [username]user
 
-// ErrorMessages is a library of error messages.
+// ErrorMessages is a collection of error messages.
 type ErrorMessages struct {
 	usernameTaken string
+	nouser        string
 }
 
-var errMssgs = ErrorMessages{"Username is taken. Please try again."}
+var errMssgs = ErrorMessages{
+	"Username is taken. Please try again.",
+	"The username and/or password were incorrect. Please try again.",
+}
 
 var tpl *template.Template
 
@@ -56,7 +61,6 @@ func check(from string, err error) {
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
-	getUsers()
 	tpl.ExecuteTemplate(w, "index.html", nil)
 }
 
@@ -66,6 +70,8 @@ func showUsers(w http.ResponseWriter, req *http.Request) {
 }
 
 func signup(w http.ResponseWriter, req *http.Request) {
+	getUsers()
+
 	if req.Method == "POST" {
 		un := req.FormValue("username")
 		pwrd := req.FormValue("password")
@@ -83,14 +89,12 @@ func signup(w http.ResponseWriter, req *http.Request) {
 }
 
 func login(w http.ResponseWriter, req *http.Request) {
-	getUsers()
-
 	if req.Method == "POST" {
 		un := req.FormValue("username")
 		pwrd := req.FormValue("password")
 
-		if !userIsRegistered(w, un, pwrd) {
-			tpl.ExecuteTemplate(w, "login.html", "User does not exist.")
+		if !isRegistered(un, pwrd) {
+			tpl.ExecuteTemplate(w, "login.html", errMssgs.nouser)
 			return
 		}
 		http.Redirect(w, req, "index.html", http.StatusSeeOther)

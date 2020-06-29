@@ -2,25 +2,29 @@ package main
 
 import (
 	"fmt"
-	"net/http"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func getUsers() {
-	rows, err := pool.Query("SELECT username, id FROM users")
+	rows, err := pool.Query("SELECT username, password, id FROM users")
 	check("pool.Query", err)
 	defer rows.Close()
 
 	var username, id string
+	var password []byte
 
 	for rows.Next() {
-		err = rows.Scan(&username, &id)
+		err = rows.Scan(&username, &password, &id)
 		check("rows.Scan", err)
-		users[username] = user{username, id}
+		users[username] = user{username, id, password}
 	}
 }
 
 func createUser(username string, password string) {
-	s := fmt.Sprintf(`INSERT INTO users (username, password) VALUES ("%s", "%s");`, username, password)
+	hashedPwrd, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+	check("bcrypt.GenerateFromPassword", err)
+	s := fmt.Sprintf(`INSERT INTO users (username, password) VALUES ("%s", "%s");`, username, hashedPwrd)
 	stmt, err := pool.Prepare(s)
 	check("pool.Prepare", err)
 	defer stmt.Close()
@@ -29,10 +33,11 @@ func createUser(username string, password string) {
 	check("stmt.Exec", err)
 }
 
-func userIsRegistered(w http.ResponseWriter, username string, password string) bool {
-	s := fmt.Sprintf(`SELECT id FROM users WHERE password="%s" LIMIT 1`, string(password))
+func isRegistered(username string, password string) bool {
+	var dbPwrd []byte
+	s := fmt.Sprintf(`SELECT password FROM users WHERE username="%s" LIMIT 1`, username)
 	r := pool.QueryRow(s)
-	var user string
-	err := r.Scan(&user)
-	return err != nil
+	err := r.Scan(&dbPwrd)
+	err = bcrypt.CompareHashAndPassword(dbPwrd, []byte(password))
+	return err == nil
 }
