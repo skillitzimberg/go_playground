@@ -7,18 +7,27 @@ import (
 )
 
 func getUsers() {
-	rows, err := pool.Query("SELECT username, password, id FROM users")
+	rows, err := pool.Query("SELECT id, username FROM users")
 	check("pool.Query", err)
 	defer rows.Close()
 
-	var username, id string
-	var password []byte
+	var id int
+	var username string
 
 	for rows.Next() {
-		err = rows.Scan(&username, &password, &id)
+		err = rows.Scan(&id, &username)
 		check("rows.Scan", err)
-		users[username] = user{username, id, password}
+		users[username] = user{id, username}
 	}
+}
+
+func getUser(username string) user {
+	var user = user{}
+	s := fmt.Sprintf(`SELECT id, username FROM users WHERE username="%s" LIMIT 1`, username)
+	r := pool.QueryRow(s)
+	err := r.Scan(&user.ID, &user.Username)
+	check("r.Scan", err)
+	return user
 }
 
 func createUser(username string, password string) {
