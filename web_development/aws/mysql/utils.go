@@ -23,7 +23,7 @@ func check(err error, from string) {
 }
 
 func isLoggedIn(req *http.Request) bool {
-	c, err := req.Cookie("session")
+	c, err := req.Cookie("goSession")
 	if err != nil {
 		return false
 	}

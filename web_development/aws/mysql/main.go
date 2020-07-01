@@ -9,8 +9,6 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-var connectionString = "admin:sbmzggX0@tcp(database-1.cbcbeyzcudgn.us-west-2.rds.amazonaws.com:3306)/gowebdev?charset=utf8"
-var pool *sql.DB // Database connection pool.
 var err error
 
 type user struct {
@@ -45,6 +43,7 @@ func main() {
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/register", register)
 	http.HandleFunc("/users", showUsers)
+	http.HandleFunc("/loggedinusers", showLoggedInUsers)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
 	err = http.ListenAndServe("localhost:8080", nil)
 }
@@ -56,6 +55,10 @@ func index(w http.ResponseWriter, req *http.Request) {
 func showUsers(w http.ResponseWriter, req *http.Request) {
 	getUsers()
 	tpl.ExecuteTemplate(w, "users.html", dbUsers)
+}
+
+func showLoggedInUsers(w http.ResponseWriter, req *http.Request) {
+	tpl.ExecuteTemplate(w, "users.html", loggedInUsers)
 }
 
 func register(w http.ResponseWriter, req *http.Request) {
@@ -79,7 +82,11 @@ func register(w http.ResponseWriter, req *http.Request) {
 }
 
 func login(w http.ResponseWriter, req *http.Request) {
+	getUsers()
 
+	if isLoggedIn(req) {
+		http.Redirect(w, req, "index.html", http.StatusSeeOther)
+	}
 	if req.Method == "POST" {
 		un := req.FormValue("username")
 		pwrd := req.FormValue("password")
@@ -96,6 +103,7 @@ func login(w http.ResponseWriter, req *http.Request) {
 			Value: sID.String(),
 		}
 		activeSessions[c.Value] = un
+		loggedInUsers[un] = dbUsers[un]
 		http.SetCookie(w, c)
 
 		http.Redirect(w, req, "index.html", http.StatusSeeOther)
@@ -103,4 +111,12 @@ func login(w http.ResponseWriter, req *http.Request) {
 	}
 
 	tpl.ExecuteTemplate(w, "login.html", nil)
+}
+
+func logout(w http.ResponseWriter, req *http.Request) {
+	if !isLoggedIn(req) {
+		http.Redirect(w, req, "index.html", http.StatusSeeOther)
+		return
+	}
+
 }
