@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"log"
 	"net/http"
 	"text/template"
 
@@ -20,21 +19,13 @@ type user struct {
 }
 
 // map[username]user
-var users = map[string]user{}
+var dbUsers = map[string]user{}
+
+// map[username]user
+var loggedInUsers = map[string]user{}
 
 // map[seesionID]username
-var sessions = map[string]string{}
-
-// ErrorMessages is a collection of error messages.
-type ErrorMessages struct {
-	usernameTaken string
-	nouser        string
-}
-
-var errMssgs = ErrorMessages{
-	"Username is taken. Please try again.",
-	"The username and/or password were incorrect. Please try again.",
-}
+var activeSessions = map[string]string{}
 
 var tpl *template.Template
 
@@ -44,24 +35,18 @@ func init() {
 
 func main() {
 	pool, err = sql.Open("mysql", connectionString)
-	check("sql.Open", err)
+	check(err, "sql.Open")
 	defer pool.Close()
 
 	err = pool.Ping()
-	check("pool.Ping", err)
+	check(err, "pool.Ping")
 
 	http.HandleFunc("/", index)
 	http.HandleFunc("/login", login)
-	http.HandleFunc("/signup", signup)
+	http.HandleFunc("/register", register)
 	http.HandleFunc("/users", showUsers)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
 	err = http.ListenAndServe("localhost:8080", nil)
-}
-
-func check(from string, err error) {
-	if err != nil {
-		log.Fatalf("Error from %s: %v", from, err)
-	}
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
@@ -70,27 +55,27 @@ func index(w http.ResponseWriter, req *http.Request) {
 
 func showUsers(w http.ResponseWriter, req *http.Request) {
 	getUsers()
-	tpl.ExecuteTemplate(w, "users.html", users)
+	tpl.ExecuteTemplate(w, "users.html", dbUsers)
 }
 
-func signup(w http.ResponseWriter, req *http.Request) {
+func register(w http.ResponseWriter, req *http.Request) {
 	getUsers()
 
 	if req.Method == "POST" {
 		un := req.FormValue("username")
 		pwrd := req.FormValue("password")
 
-		if _, ok := users[un]; ok {
-			tpl.ExecuteTemplate(w, "signup.html", errMssgs.usernameTaken)
+		if _, ok := dbUsers[un]; ok {
+			tpl.ExecuteTemplate(w, "register.html", errMssgs.usernameTaken)
 			return
 		}
 
-		createUser(un, pwrd)
-		usr := getUser(un)
-		users[un] = usr
+		saveNewUser(un, pwrd)
+		usr := getUserFromDB(un)
+		dbUsers[un] = usr
 		http.Redirect(w, req, "/users", http.StatusSeeOther)
 	}
-	tpl.ExecuteTemplate(w, "signup.html", nil)
+	tpl.ExecuteTemplate(w, "register.html", nil)
 }
 
 func login(w http.ResponseWriter, req *http.Request) {
@@ -105,12 +90,12 @@ func login(w http.ResponseWriter, req *http.Request) {
 		}
 
 		sID, err := uuid.NewV4()
-		check("uuid.NewV4", err)
+		check(err, "uuid.NewV4")
 		c := &http.Cookie{
 			Name:  "goSession",
 			Value: sID.String(),
 		}
-		sessions[c.Value] = un
+		activeSessions[c.Value] = un
 		http.SetCookie(w, c)
 
 		http.Redirect(w, req, "index.html", http.StatusSeeOther)

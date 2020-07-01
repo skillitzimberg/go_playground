@@ -8,7 +8,7 @@ import (
 
 func getUsers() {
 	rows, err := pool.Query("SELECT id, username FROM users")
-	check("pool.Query", err)
+	check(err, "pool.Query")
 	defer rows.Close()
 
 	var id int
@@ -16,30 +16,34 @@ func getUsers() {
 
 	for rows.Next() {
 		err = rows.Scan(&id, &username)
-		check("rows.Scan", err)
-		users[username] = user{id, username}
+		check(err, "rows.Scan")
+		dbUsers[username] = user{id, username}
 	}
 }
 
-func getUser(username string) user {
+func getUserFromDB(username string) user {
 	var user = user{}
 	s := fmt.Sprintf(`SELECT id, username FROM users WHERE username="%s" LIMIT 1`, username)
 	r := pool.QueryRow(s)
 	err := r.Scan(&user.ID, &user.Username)
-	check("r.Scan", err)
+	check(err, "r.Scan")
 	return user
 }
 
-func createUser(username string, password string) {
+func getLoggedInUser(username string) user {
+	return loggedInUsers[username]
+}
+
+func saveNewUser(username string, password string) {
 	hashedPwrd, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
-	check("bcrypt.GenerateFromPassword", err)
+	check(err, "bcrypt.GenerateFromPassword")
 	s := fmt.Sprintf(`INSERT INTO users (username, password) VALUES ("%s", "%s");`, username, hashedPwrd)
 	stmt, err := pool.Prepare(s)
-	check("pool.Prepare", err)
+	check(err, "pool.Prepare")
 	defer stmt.Close()
 
 	_, err = stmt.Exec()
-	check("stmt.Exec", err)
+	check(err, "stmt.Exec")
 }
 
 func isRegistered(username string, password string) bool {
