@@ -7,36 +7,46 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   >
-  <title>Login</title>
+  <title>Update User</title>
 </head>
 
 <body>
-  <h1>Login</h1>
+  <h1>Update User</h1>
   <a href="/">Home</a><br>
-  <a href="/register">Register</a><br>
+  <a href="/logout">Logout</a><br>
   <a href="/users">Users</a><br>
   <a href="/loggedinusers">Logged In Users</a>
-
   <form method="post">
+    <label for="findUser">Select User</label>
+    <select
+      name="findUser"
+      id="findUser"
+    >
+      {{range .}}
+      <option value={{.Username}}>{{.Username}}</option>
+      {{end}}
+    </select>
+
     <label for="username">Username</label>
     <input
       type="text"
       name="username"
       id="username"
+      placeholder="Enter new username"
     >
 
     <label for="password">Password</label>
     <input
-      type="text"
-      name="password"
-      id="password"
+      type="password"
+      name="newpassword"
+      id="newpassword"
+      placeholder="Enter new password"
     >
     <input
       type="submit"
-      value="Login"
+      value="Add User"
     >
   </form>
-  <p id="userNotExists">{{.}}</p>
 </body>
 
 </html>

@@ -7,22 +7,18 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   >
-  <title>Users</title>
+  <title>Private Page</title>
 </head>
 
-
 <body>
-  <h1>Users</h1>
+  <h1>Secrets!!!</h1>
+  <h2>Welcome, {{.Username}}!</h2>
   <a href="/">Home</a><br>
-  <a href="/register">Register</a><br>
-  <a href="/login">Login</a><br>
   <a href="/logout">Logout</a><br>
-  <a href="/loggedinusers">Logged In Users</a>
   <a href="/update">Update User</a><br>
-
-  {{range .}}
-  <p>{{.ID}}: {{.Username}} - {{.Role}}</p>
-  {{end}}
+  <a href="/users">Users</a><br>
+  <a href="/loggedinusers">Logged In Users</a>
+  <p>Only Admin can see this page.</p>
 </body>
 
 </html>

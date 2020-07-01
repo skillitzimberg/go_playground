@@ -11,17 +11,18 @@ var connectionString = "admin:sbmzggX0@tcp(database-1.cbcbeyzcudgn.us-west-2.rds
 var pool *sql.DB // Database connection pool.
 
 func getUsers() {
-	rows, err := pool.Query("SELECT id, username FROM users")
+	rows, err := pool.Query("SELECT id, role, username FROM users")
 	check(err, "pool.Query")
 	defer rows.Close()
 
 	var id int
 	var username string
+	var role string
 
 	for rows.Next() {
-		err = rows.Scan(&id, &username)
+		err = rows.Scan(&id, &role, &username)
 		check(err, "rows.Scan")
-		dbUsers[username] = user{id, username}
+		dbUsers[username] = user{id, username, role}
 	}
 }
 
@@ -32,10 +33,6 @@ func getUserFromDB(username string) user {
 	err := r.Scan(&user.ID, &user.Username)
 	check(err, "r.Scan")
 	return user
-}
-
-func getLoggedInUser(username string) user {
-	return loggedInUsers[username]
 }
 
 func saveNewUser(username string, password string) {
@@ -57,4 +54,22 @@ func isRegistered(username string, password string) bool {
 	err := r.Scan(&dbPwrd)
 	err = bcrypt.CompareHashAndPassword(dbPwrd, []byte(password))
 	return err == nil
+}
+
+func update(newUsername string, oldUsername string, pwrd string, newHashedPassword []byte) {
+	var s string
+	if pwrd == "" {
+		s = fmt.Sprintf(`UPDATE users SET username="%s" WHERE username="%s"`, newUsername, oldUsername)
+	} else if newUsername == "" {
+		s = fmt.Sprintf(`UPDATE users SET password="%s" WHERE username="%s"`, newHashedPassword, oldUsername)
+	} else {
+		s = fmt.Sprintf(`UPDATE users SET username="%s", password="%s" WHERE username="%s"`, newUsername, newHashedPassword, oldUsername)
+	}
+
+	stmt, err := pool.Prepare(s)
+	check(err, "pool.Prepare")
+	defer stmt.Close()
+
+	_, err = stmt.Exec()
+	check(err, "stmt.Exec")
 }

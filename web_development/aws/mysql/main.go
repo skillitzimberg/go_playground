@@ -7,6 +7,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	uuid "github.com/satori/go.uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var err error
@@ -14,6 +15,7 @@ var err error
 type user struct {
 	ID       int
 	Username string
+	Role     string
 }
 
 // map[username]user
@@ -42,7 +44,9 @@ func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/logout", logout)
+	http.HandleFunc("/private", private)
 	http.HandleFunc("/register", register)
+	http.HandleFunc("/update", updateUser)
 	http.HandleFunc("/users", showUsers)
 	http.HandleFunc("/loggedinusers", showLoggedInUsers)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
@@ -130,4 +134,53 @@ func logout(w http.ResponseWriter, req *http.Request) {
 	http.SetCookie(w, c)
 
 	tpl.ExecuteTemplate(w, "users.html", loggedInUsers)
+}
+
+func private(w http.ResponseWriter, req *http.Request) {
+	c, err := req.Cookie("goSession")
+
+	if err != nil {
+		http.Redirect(w, req, "/login", http.StatusForbidden)
+		return
+	}
+
+	un := activeSessions[c.Value]
+
+	if !isLoggedInAdmin(un) {
+		http.Redirect(w, req, "/login", http.StatusForbidden)
+		return
+	}
+	usr := loggedInUsers[un]
+	tpl.ExecuteTemplate(w, "private.html", usr)
+}
+
+func updateUser(w http.ResponseWriter, req *http.Request) {
+	c, err := req.Cookie("goSession")
+
+	if err != nil {
+		http.Redirect(w, req, "/login", http.StatusForbidden)
+		return
+	}
+
+	un := activeSessions[c.Value]
+
+	if !isLoggedInAdmin(un) {
+		http.Redirect(w, req, "/login", http.StatusForbidden)
+		return
+	}
+
+	if req.Method == "POST" {
+		oldUsername := req.FormValue("findUser")
+		newUsername := req.FormValue("username")
+		pwrd := req.FormValue("newpassword")
+		newPassword, err := bcrypt.GenerateFromPassword([]byte(pwrd), bcrypt.MinCost)
+		check(err, "bcrypt.GenerateFromPassword")
+
+		update(newUsername, oldUsername, pwrd, newPassword)
+		delete(dbUsers, oldUsername)
+		http.Redirect(w, req, "/users", http.StatusSeeOther)
+		return
+	}
+	getUsers()
+	tpl.ExecuteTemplate(w, "update.html", dbUsers)
 }

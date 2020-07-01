@@ -22,6 +22,10 @@ func check(err error, from string) {
 	}
 }
 
+func getLoggedInUser(username string) user {
+	return loggedInUsers[username]
+}
+
 func isLoggedIn(req *http.Request) bool {
 	c, err := req.Cookie("goSession")
 	if err != nil {
@@ -29,5 +33,13 @@ func isLoggedIn(req *http.Request) bool {
 	}
 	un := activeSessions[c.Value]
 	_, ok := loggedInUsers[un]
+	return ok
+}
+
+func isLoggedInAdmin(username string) bool {
+	usr, ok := loggedInUsers[username]
+	if ok && usr.Role == "admin" {
+		return ok
+	}
 	return ok
 }
