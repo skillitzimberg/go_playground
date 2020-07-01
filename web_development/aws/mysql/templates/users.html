@@ -13,9 +13,11 @@
 
 <body>
   <h1>Users</h1>
-  <a href="/home">Home</a><br>
-  <a href="/signup">Signup</a><br>
-  <a href="/login">Login</a>
+  <a href="/">Home</a><br>
+  <a href="/register">Register</a><br>
+  <a href="/login">Login</a><br>
+  <a href="/logout">Logout</a><br>
+  <a href="/loggedinusers">Logged In Users</a>
 
   {{range .}}
   <p>{{.ID}}: {{.Username}}</p>

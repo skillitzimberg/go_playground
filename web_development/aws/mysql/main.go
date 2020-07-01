@@ -41,6 +41,7 @@ func main() {
 
 	http.HandleFunc("/", index)
 	http.HandleFunc("/login", login)
+	http.HandleFunc("/logout", logout)
 	http.HandleFunc("/register", register)
 	http.HandleFunc("/users", showUsers)
 	http.HandleFunc("/loggedinusers", showLoggedInUsers)
@@ -85,7 +86,7 @@ func login(w http.ResponseWriter, req *http.Request) {
 	getUsers()
 
 	if isLoggedIn(req) {
-		http.Redirect(w, req, "index.html", http.StatusSeeOther)
+		http.Redirect(w, req, "/", http.StatusSeeOther)
 	}
 	if req.Method == "POST" {
 		un := req.FormValue("username")
@@ -106,7 +107,7 @@ func login(w http.ResponseWriter, req *http.Request) {
 		loggedInUsers[un] = dbUsers[un]
 		http.SetCookie(w, c)
 
-		http.Redirect(w, req, "index.html", http.StatusSeeOther)
+		http.Redirect(w, req, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -115,8 +116,18 @@ func login(w http.ResponseWriter, req *http.Request) {
 
 func logout(w http.ResponseWriter, req *http.Request) {
 	if !isLoggedIn(req) {
-		http.Redirect(w, req, "index.html", http.StatusSeeOther)
+		http.Redirect(w, req, "/", http.StatusSeeOther)
 		return
 	}
 
+	c, err := req.Cookie("goSession")
+	check(err, "goSession")
+
+	un := activeSessions[c.Value]
+	delete(loggedInUsers, un)
+	delete(activeSessions, c.Value)
+	c.MaxAge = -1
+	http.SetCookie(w, c)
+
+	tpl.ExecuteTemplate(w, "users.html", loggedInUsers)
 }
