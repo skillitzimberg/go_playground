@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -74,18 +75,18 @@ func update(newUsername string, oldUsername string, pwrd string, newHashedPasswo
 	check(err, "stmt.Exec")
 }
 
-func deleteUser(userID string) int64 {
+func deleteUser(userID string) {
 	fmt.Println(userID)
 	s := fmt.Sprintf(`DELETE FROM users WHERE id="%s"`, userID)
 	stmt, err := pool.Prepare(s)
 	check(err, "pool.Prepare")
 	defer stmt.Close()
 
-	r, err := stmt.Exec()
+	_, err = stmt.Exec()
 	check(err, "stmt.Exec")
 
-	ln, err := r.RowsAffected()
-	check(err, "r.RowsAffected")
-
-	return ln
+	id, _ := strconv.Atoi(userID)
+	un := findUsernameByID(dbUsers, id)
+	delete(dbUsers, un)
+	fmt.Println(dbUsers)
 }

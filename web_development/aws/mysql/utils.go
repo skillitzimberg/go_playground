@@ -43,3 +43,12 @@ func isLoggedInAdmin(username string) bool {
 	}
 	return ok
 }
+
+func findUsernameByID(users map[string]user, id int) (username string) {
+	for k, u := range users {
+		if u.ID == id {
+			username = k
+		}
+	}
+	return
+}
