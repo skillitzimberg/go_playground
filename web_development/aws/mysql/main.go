@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"net/http"
+	"regexp"
 	"text/template"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -46,6 +47,7 @@ func main() {
 	http.HandleFunc("/logout", logout)
 	http.HandleFunc("/private", private)
 	http.HandleFunc("/register", register)
+	http.HandleFunc("/remove/", remove)
 	http.HandleFunc("/update", updateUser)
 	http.HandleFunc("/users", showUsers)
 	http.HandleFunc("/loggedinusers", showLoggedInUsers)
@@ -183,4 +185,14 @@ func updateUser(w http.ResponseWriter, req *http.Request) {
 	}
 	getUsers()
 	tpl.ExecuteTemplate(w, "update.html", dbUsers)
+}
+
+func remove(w http.ResponseWriter, req *http.Request) {
+	q := req.URL.String()
+
+	rex := regexp.MustCompile("/remove/")
+	userID := rex.ReplaceAllString(q, "")
+	deleteUser(userID)
+
+	http.Redirect(w, req, "/users", http.StatusSeeOther)
 }

@@ -17,11 +17,13 @@
   <a href="/register">Register</a><br>
   <a href="/login">Login</a><br>
   <a href="/logout">Logout</a><br>
-  <a href="/loggedinusers">Logged In Users</a>
+  <a href="/loggedinusers">Logged In Users</a><br>
   <a href="/update">Update User</a><br>
 
   {{range .}}
-  <p>{{.ID}}: {{.Username}} - {{.Role}}</p>
+  <ul>
+    <li>{{.ID}}: {{.Username}} - {{.Role}} <a href="/remove/{{.ID}}">remove</a></li>
+  </ul>
   {{end}}
 </body>
 

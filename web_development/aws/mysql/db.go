@@ -38,7 +38,7 @@ func getUserFromDB(username string) user {
 func saveNewUser(username string, password string) {
 	hashedPwrd, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 	check(err, "bcrypt.GenerateFromPassword")
-	s := fmt.Sprintf(`INSERT INTO users (username, password) VALUES ("%s", "%s");`, username, hashedPwrd)
+	s := fmt.Sprintf(`INSERT INTO users (username, password, role) VALUES ("%s", "%s", "%s");`, username, hashedPwrd, " ")
 	stmt, err := pool.Prepare(s)
 	check(err, "pool.Prepare")
 	defer stmt.Close()
@@ -72,4 +72,20 @@ func update(newUsername string, oldUsername string, pwrd string, newHashedPasswo
 
 	_, err = stmt.Exec()
 	check(err, "stmt.Exec")
+}
+
+func deleteUser(userID string) int64 {
+	fmt.Println(userID)
+	s := fmt.Sprintf(`DELETE FROM users WHERE id="%s"`, userID)
+	stmt, err := pool.Prepare(s)
+	check(err, "pool.Prepare")
+	defer stmt.Close()
+
+	r, err := stmt.Exec()
+	check(err, "stmt.Exec")
+
+	ln, err := r.RowsAffected()
+	check(err, "r.RowsAffected")
+
+	return ln
 }
