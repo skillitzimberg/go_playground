@@ -1,0 +1,8 @@
+{
+  "AccessLog": {
+    "Enabled": true,
+    "S3BucketName": "scotts3labbucket",
+    "EmitInterval": 60,
+    "S3BucketPrefix": "elb-access-logs"
+  }
+}
