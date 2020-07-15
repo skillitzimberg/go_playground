@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"html/template"
 	"io"
 	"log"
 	"net/http"
@@ -20,8 +20,19 @@ type user struct {
 	Username string
 }
 
+type pageData struct {
+	Instance string
+	Users    map[string]user
+}
+
 // map[username]user
 var dbUsers = map[string]user{}
+
+var tpl *template.Template
+
+func init() {
+	tpl = template.Must(template.ParseGlob("templates/*.html"))
+}
 
 func main() {
 	pool, err = sql.Open("mysql", connectionString)
@@ -39,9 +50,9 @@ func main() {
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
-	s := "Hello from AWS: Round Three."
+	s := "Hello from AWS"
 	s += getInstanceID()
-	io.WriteString(w, s)
+	tpl.ExecuteTemplate(w, "index.html", s)
 }
 
 func ping(w http.ResponseWriter, req *http.Request) {
@@ -55,18 +66,15 @@ func users(w http.ResponseWriter, req *http.Request) {
 
 	var id int
 	var username string
-	s := getInstanceID()
-	s += "\nREGISTERED USERS:\n"
-	fmt.Println(s)
+	instanceID := getInstanceID()
 
 	for rows.Next() {
-		fmt.Println(s)
 		err = rows.Scan(&id, &username)
 		check(err, "rows.Scan")
 		dbUsers[username] = user{id, username}
-		s += username + "\n"
 	}
-	io.WriteString(w, s)
+	pg := pageData{instanceID, dbUsers}
+	tpl.ExecuteTemplate(w, "users.html", pg)
 }
 
 func instance(w http.ResponseWriter, req *http.Request) {
