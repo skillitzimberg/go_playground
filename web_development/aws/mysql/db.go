@@ -8,7 +8,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var connectionString = "admin:sbmzggX0@tcp(database-1.cbcbeyzcudgn.us-west-2.rds.amazonaws.com:3306)/gowebdev?charset=utf8"
+var connectionString = "admin:sbmzggX0@tcp(crud-rds-db.cbcbeyzcudgn.us-west-2.rds.amazonaws.com:3306)/CRUD_RDS_DB?charset=utf8"
 var pool *sql.DB // Database connection pool.
 
 func getUsers() {

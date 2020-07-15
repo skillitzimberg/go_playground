@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"io"
 	"net/http"
 	"regexp"
 	"text/template"
@@ -45,6 +46,7 @@ func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/logout", logout)
+	http.HandleFunc("/ping", ping)
 	http.HandleFunc("/private", private)
 	http.HandleFunc("/register", register)
 	http.HandleFunc("/remove/", remove)
@@ -52,7 +54,11 @@ func main() {
 	http.HandleFunc("/users", showUsers)
 	http.HandleFunc("/loggedinusers", showLoggedInUsers)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
-	err = http.ListenAndServe("localhost:8080", nil)
+	err = http.ListenAndServe(":80", nil)
+}
+
+func ping(w http.ResponseWriter, req *http.Request) {
+	io.WriteString(w, "OK")
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
