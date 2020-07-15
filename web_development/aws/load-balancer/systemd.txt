@@ -2,7 +2,7 @@
 Description=Go Server
 
 [Service]
-ExecStart=/home/ubuntu/cowboy
+ExecStart=/home/ubuntu/users
 WorkingDirectory=/home/ubuntu
 User=root
 Group=root
