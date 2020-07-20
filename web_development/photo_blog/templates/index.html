@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photo Blog</title>
+  </head>
+  <body>
+    <p>Cookie Value: {{.UUID}}</p>
+
+    <p>Image Names:</p>
+    <ul>
+      {{range .Images}}
+      <li>{{.Name}}</li>
+      {{end}}
+    </ul>
+    {{range .Images}}
+    <img src="/public/img/{{.Name}}" alt="" />
+    {{end}}
+
+    <form method="post" enctype="multipart/form-data">
+      <input type="file" name="name" />
+      <input type="submit" value="Upload" />
+    </form>
+  </body>
+</html>
