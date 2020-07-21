@@ -8,6 +8,11 @@
   <body>
     <p>Cookie Value: {{.UUID}}</p>
 
+    <form method="post" enctype="multipart/form-data">
+      <input type="file" name="name" />
+      <input type="submit" value="Upload" />
+    </form>
+
     <p>Image Names:</p>
     <ul>
       {{range .Images}}
@@ -17,10 +22,5 @@
     {{range .Images}}
     <img src="/public/img/{{.Name}}" alt="" />
     {{end}}
-
-    <form method="post" enctype="multipart/form-data">
-      <input type="file" name="name" />
-      <input type="submit" value="Upload" />
-    </form>
   </body>
 </html>
